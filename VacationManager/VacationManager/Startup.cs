@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
+using VacationManager.Models.Entities;
 
 namespace VacationManager
 {
@@ -20,13 +21,10 @@ namespace VacationManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<VacationManagerContext>(option => option.UseSqlServer("VacationManagerConnection"));
+            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" }));
 
-            services.AddSwaggerGen(
-                c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "VacationManager", Version = "v1" });
-                }
-            );
+            // Add scrutor
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,17 +38,9 @@ namespace VacationManager
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(
-                endpoints =>
-                {
-                    endpoints.MapControllers();
-                }
-            );
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
     }
 }
