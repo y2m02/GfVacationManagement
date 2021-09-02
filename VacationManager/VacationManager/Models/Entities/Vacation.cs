@@ -4,12 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VacationManager.Models.Entities
 {
-    public class Vacation
+    public class Vacation : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int VacationId { get; set; }
-
         [Required]
         public DateTime From { get; set; }
 
