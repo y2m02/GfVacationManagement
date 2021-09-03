@@ -24,14 +24,16 @@ namespace VacationManagerApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<VacationManagerContext>(option => option.UseSqlServer("VacationManagerConnection"));
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" }));
 
-            var mappingConfig = new MapperConfiguration(
-                mc => mc.AddProfile(new ProfileMapper())
-            );
-
+            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new ProfileMapper()));
             services.AddSingleton(mappingConfig.CreateMapper());
+
+            services.AddDbContext<VacationManagerContext>(
+                option => option.UseSqlServer(
+                    Configuration.GetConnectionString("VacationManagerConnection")
+                )
+            );
 
             RegisterServices(services);
         }
