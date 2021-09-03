@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Models.Responses;
+using VacationManagerApi.Repositories;
 
 namespace VacationManagerApi.Services
 {
@@ -10,6 +11,9 @@ namespace VacationManagerApi.Services
         BaseService<Vacation, VacationResponse>,
         IVacationService
     {
-        public VacationService(IMapper mapper) : base(mapper) { }
+        public VacationService(
+            IMapper mapper,
+            IVacationRepository repository
+        ) : base(mapper) => Repository = repository;
     }
 }
