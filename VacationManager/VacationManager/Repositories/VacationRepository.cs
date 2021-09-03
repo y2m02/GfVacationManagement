@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VacationManager.Models.Entities;
 
 namespace VacationManager.Repositories
@@ -8,6 +10,11 @@ namespace VacationManager.Repositories
     public class VacationRepository : BaseRepository<Vacation>, IVacationRepository
     {
         public VacationRepository(VacationManagerContext context) : base(context) { }
+
+        public override Task<List<Vacation>> GetAll()
+        {
+            return context.Vacations.Include(x => x.Holiday).ToListAsync();
+        }
 
         public async Task<Vacation> Update(Vacation entity)
         {

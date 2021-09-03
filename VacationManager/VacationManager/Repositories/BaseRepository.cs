@@ -14,11 +14,11 @@ namespace VacationManager.Repositories
         Task Delete(TEntity entity);
     }
 
-    public class BaseRepository<TEntity> where TEntity : BaseEntity
+    public abstract class BaseRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly VacationManagerContext context;
+        protected readonly VacationManagerContext context;
 
-        public BaseRepository(VacationManagerContext context)
+        protected BaseRepository(VacationManagerContext context)
         {
             this.context = context;
         }
