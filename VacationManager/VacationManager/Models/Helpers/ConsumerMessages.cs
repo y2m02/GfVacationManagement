@@ -23,5 +23,7 @@
         public const string InvalidKeyLength = "The provided key MUST contain 32 characters";
 
         public const string InvalidField = "The field {0} is invalid";
+
+        public const string FieldMustBeGreaterOrEqualsTo = "The field {0} must be greater than {1}";
     }
 }
