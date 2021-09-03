@@ -4,11 +4,11 @@ namespace VacationManager.Models.Requests
 {
     public interface IRequest
     {
-        public IEnumerable<string> Validate();
+        IEnumerable<string> Validate();
     }
 
     public interface IUpdateableRequest : IRequest
     {
-        public int Id { get; set; }
+        int Id { get; set; }
     }
 }

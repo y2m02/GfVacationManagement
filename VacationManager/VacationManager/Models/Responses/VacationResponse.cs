@@ -10,7 +10,7 @@ namespace VacationManager.Models.Responses
         public DateTime To { get; set; }
         public int Year { get; set; }
         public bool IsLongWeekend { get; set; }
+        public int TotalWorkingDays { get; set; }
         public int TotalDays { get; set; }
-        public int TotalDaysIncludingWeekends { get; set; }
     }
 }

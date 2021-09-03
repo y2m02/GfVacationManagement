@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
+using VacationManager.Helpers;
 using VacationManager.Models.Entities;
 using VacationManager.Models.Requests;
 using VacationManager.Models.Responses;
@@ -23,37 +21,24 @@ namespace VacationManager.Mappings
                 )
                 .ForMember(
                     destination => destination.IsLongWeekend,
-                    member => member.MapFrom(x => false)
+                    member => member.MapFrom(
+                        field => DateTimeHelper.ContainsLongWeekends(field.From, field.To)
+                    )
+                )
+                .ForMember(
+                    destination => destination.TotalWorkingDays,
+                    member => member.MapFrom(
+                        field => DateTimeHelper.GetTotalOfWorkingDays(field.From, field.To)
+                    )
                 )
                 .ForMember(
                     destination => destination.TotalDays,
-                    member => member.MapFrom(field => (field.To - field.From).TotalDays)
-                )
-                .ForMember(
-                    destination => destination.TotalDays,
-                    member => member.MapFrom(field => (field.To.Date - field.From.Date).TotalDays)
+                    member => member.MapFrom(
+                        field => DateTimeHelper.GetTotalOfDays(field.From, field.To)
+                    )
                 );
-        }
-
-        public bool Test(Vacation vacation)
-        {
-            var fromDate = vacation.From.Date;
-
-            var a = new List<DateTime>
-            {
-                fromDate,
-            };
-
-            while (fromDate <= vacation.To.Date)
-            {
-                a.Add(fromDate);
-                fromDate = fromDate.AddDays(1);
-            }
-
-            var daysOfWeek = a.Select(x => x.DayOfWeek);
-
-            
-            if (daysOfWeek.Any(x=> x == DayOfWeek.Sunday || x == DayOfWeek.Saturday)) { }
+            CreateMap<CreateVacationRequest, Vacation>();
+            CreateMap<UpdateVacationRequest, Vacation>();
         }
     }
 }
