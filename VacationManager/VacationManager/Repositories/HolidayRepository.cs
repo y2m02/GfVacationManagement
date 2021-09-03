@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
 using VacationManager.Models.Entities;
 
 namespace VacationManager.Repositories
@@ -11,11 +9,6 @@ namespace VacationManager.Repositories
     {
         public HolidayRepository(VacationManagerContext context) : base(context) { }
 
-        public async Task<Holiday> Update(Holiday entity)
-        {
-            await Update(entity, new[] { "Name", "TotalDays" }).ConfigureAwait(false);
-
-            return await GetById(entity.Id).ConfigureAwait(false);
-        }
+        public Task Update(Holiday entity) => Update(entity, new[] { "Name", "TotalDays" });
     }
 }

@@ -15,6 +15,7 @@ namespace VacationManager.Services
     public interface IBaseService
     {
         Task<Result> GetAll();
+        Task<Result> GetById(int id);
         Task<Result> Create(IRequest entity);
         Task<Result> Update(IUpdateableRequest entity);
         Task<Result> Delete(int id);
@@ -38,6 +39,18 @@ namespace VacationManager.Services
                     var entities = await Repository.GetAll().ConfigureAwait(false);
 
                     return new(Mapper.Map<List<TResponse>>(entities));
+                }
+            );
+        }
+
+        public Task<Result> GetById(int id)
+        {
+            return HandleErrors(
+                async () =>
+                {
+                    var entity = await Repository.GetById(id).ConfigureAwait(false);
+
+                    return new(Mapper.Map<TResponse>(entity));
                 }
             );
         }
@@ -99,12 +112,24 @@ namespace VacationManager.Services
                     }
 
                     var mappedEntity = Mapper.Map<TEntity>(entity);
+                    TEntity entityFromDb;
 
-                    var task = actionType == UpsertActionType.Create
-                        ? Repository.Create(mappedEntity)
-                        : Repository.Update(mappedEntity);
+                    switch (actionType)
+                    {
+                        case UpsertActionType.Create:
+                            entityFromDb = await Repository.Create(mappedEntity).ConfigureAwait(false);
+                            break;
 
-                    return new(Mapper.Map<TResponse>(await task.ConfigureAwait(false)));
+                        default:
+                            await Repository.Update(mappedEntity).ConfigureAwait(false);
+
+                            entityFromDb = await Repository
+                                .GetById(((IUpdateableRequest)entity).Id)
+                                .ConfigureAwait(false);
+                            break;
+                    }
+
+                    return new(Mapper.Map<TResponse>(entityFromDb));
                 }
             );
         }

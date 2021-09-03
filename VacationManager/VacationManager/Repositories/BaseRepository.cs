@@ -10,7 +10,7 @@ namespace VacationManager.Repositories
         Task<List<TEntity>> GetAll();
         Task<TEntity> GetById(int id);
         Task<TEntity> Create(TEntity entity);
-        Task<TEntity> Update(TEntity entity);
+        Task Update(TEntity entity);
         Task Delete(TEntity entity);
     }
 
@@ -23,10 +23,7 @@ namespace VacationManager.Repositories
             this.context = context;
         }
 
-        public virtual Task<List<TEntity>> GetAll()
-        {
-            return context.Set<TEntity>().ToListAsync();
-        }
+        public virtual Task<List<TEntity>> GetAll() => context.Set<TEntity>().ToListAsync();
 
         public Task<TEntity> GetById(int id)
         {
