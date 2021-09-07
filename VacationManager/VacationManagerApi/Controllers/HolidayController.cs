@@ -9,10 +9,7 @@ namespace VacationManagerApi.Controllers
     {
         private readonly IHolidayService service;
 
-        public HolidayController(IHolidayService service)
-        {
-            this.service = service;
-        }
+        public HolidayController(IHolidayService service) => this.service = service;
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
