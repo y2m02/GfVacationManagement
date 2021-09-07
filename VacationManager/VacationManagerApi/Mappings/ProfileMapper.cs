@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using VacationManagerApi.Helpers;
+using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Models.Requests;
 using VacationManagerApi.Models.Responses;
@@ -10,11 +11,11 @@ namespace VacationManagerApi.Mappings
     {
         public ProfileMapper()
         {
-            CreateMap<Holiday, HolidayResponse>();
+            CreateMap<Holiday, HolidayDto>();
             CreateMap<CreateHolidayRequest, Holiday>();
             CreateMap<UpdateHolidayRequest, Holiday>();
 
-            CreateMap<Vacation, VacationResponse>()
+            CreateMap<Vacation, VacationDto>()
                 .ForMember(
                     destination => destination.HolidayName,
                     member => member.MapFrom(field => field.Holiday.Id)

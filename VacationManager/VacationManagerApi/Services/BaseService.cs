@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HelpersLibrary.Extensions;
+using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Models.Helpers;
 using VacationManagerApi.Models.Requests;
@@ -21,9 +22,9 @@ namespace VacationManagerApi.Services
         Task<Result> Delete(int id);
     }
 
-    public abstract class BaseService<TEntity, TResponse>
+    public abstract class BaseService<TEntity, TDto>
         where TEntity : BaseEntity, new()
-        where TResponse : BaseResponse
+        where TDto : BaseDto
     {
         protected readonly IMapper Mapper;
 
@@ -38,7 +39,7 @@ namespace VacationManagerApi.Services
                 {
                     var entities = await Repository.GetAll().ConfigureAwait(false);
 
-                    return new(Mapper.Map<List<TResponse>>(entities));
+                    return new(Mapper.Map<List<TDto>>(entities));
                 }
             );
         }
@@ -50,7 +51,7 @@ namespace VacationManagerApi.Services
                 {
                     var entity = await Repository.GetById(id).ConfigureAwait(false);
 
-                    return new(Mapper.Map<TResponse>(entity));
+                    return new(Mapper.Map<TDto>(entity));
                 }
             );
         }
@@ -129,7 +130,7 @@ namespace VacationManagerApi.Services
                             break;
                     }
 
-                    return new(Mapper.Map<TResponse>(entityFromDb));
+                    return new(Mapper.Map<TDto>(entityFromDb));
                 }
             );
         }
