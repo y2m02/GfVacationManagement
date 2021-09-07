@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
-using VacationManagerApi.Models.Responses;
 using VacationManagerApi.Repositories;
 
 namespace VacationManagerApi.Services

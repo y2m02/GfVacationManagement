@@ -13,16 +13,16 @@ namespace VacationManagerApi.Controllers
             return StatusCode((int)HttpStatusCode.InternalServerError, value);
         }
 
-        protected IActionResult ValidateResult(Result result)
+        protected IActionResult ValidateResult(BaseResponse baseResponse)
         {
-            if (result.Succeeded())
+            if (baseResponse.Succeeded())
             {
-                return Ok(result);
+                return Ok(baseResponse);
             }
 
-            return result.HasValidations()
-                ? BadRequest(result)
-                : InternalServerError(result);
+            return baseResponse.HasValidations()
+                ? BadRequest(baseResponse)
+                : InternalServerError(baseResponse);
         }
     }
 }
