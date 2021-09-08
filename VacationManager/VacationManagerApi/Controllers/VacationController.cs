@@ -17,7 +17,7 @@ namespace VacationManagerApi.Controllers
             return ValidateResponse(await service.GetAll().ConfigureAwait(false));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:required}")]
         public async Task<IActionResult> GetById(int id)
         {
             return ValidateResponse(await service.GetById(id).ConfigureAwait(false));
@@ -29,13 +29,13 @@ namespace VacationManagerApi.Controllers
             return ValidateResponse(await service.Create(request).ConfigureAwait(false));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:required}")]
         public async Task<IActionResult> Update(int id, VacationRequest request)
         {
             return ValidateResponse(await service.Update(id, request).ConfigureAwait(false));
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:required}")]
         public async Task<IActionResult> Delete(int id)
         {
             return ValidateResponse(await service.Delete(id).ConfigureAwait(false));
