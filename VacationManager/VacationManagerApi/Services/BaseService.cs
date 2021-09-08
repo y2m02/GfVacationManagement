@@ -18,7 +18,7 @@ namespace VacationManagerApi.Services
         Task<BaseResponse> GetAll();
         Task<BaseResponse> GetById(int id);
         Task<BaseResponse> Create(IRequest entity);
-        Task<BaseResponse> Update(IUpdateableRequest entity);
+        Task<BaseResponse> Update(int id, IRequest entity);
         Task<BaseResponse> Delete(int id);
     }
 
@@ -56,14 +56,11 @@ namespace VacationManagerApi.Services
             );
         }
 
-        public Task<BaseResponse> Create(IRequest entity)
-        {
-            return Upsert(entity, UpsertActionType.Create);
-        }
+        public Task<BaseResponse> Create(IRequest entity) => Upsert(entity);
 
-        public Task<BaseResponse> Update(IUpdateableRequest entity)
+        public Task<BaseResponse> Update(int id, IRequest entity)
         {
-            return Upsert(entity, UpsertActionType.Update);
+            return Upsert(entity, id);
         }
 
         public Task<BaseResponse> Delete(int id)
@@ -98,7 +95,7 @@ namespace VacationManagerApi.Services
             }
         }
 
-        private Task<BaseResponse> Upsert(IRequest entity, UpsertActionType actionType)
+        private Task<BaseResponse> Upsert(IRequest entity, int? id = null)
         {
             return HandleErrors(
                 async () =>
@@ -111,24 +108,12 @@ namespace VacationManagerApi.Services
                     }
 
                     var mappedEntity = Mapper.Map<TEntity>(entity);
-                    TEntity entityFromDb;
 
-                    switch (actionType)
-                    {
-                        case UpsertActionType.Create:
-                            entityFromDb = await Repository.Create(mappedEntity).ConfigureAwait(false);
-                            break;
+                    var task = id.HasValue
+                        ? Repository.Update(mappedEntity.Tap(x => x.Id = id.Value))
+                        : Repository.Create(mappedEntity);
 
-                        default:
-                            await Repository.Update(mappedEntity).ConfigureAwait(false);
-
-                            entityFromDb = await Repository
-                                .GetById(((IUpdateableRequest)entity).Id)
-                                .ConfigureAwait(false);
-                            break;
-                    }
-
-                    return new Success(Mapper.Map<TDto>(entityFromDb));
+                    return new Success(Mapper.Map<TDto>(await task.ConfigureAwait(false)));
                 }
             );
         }

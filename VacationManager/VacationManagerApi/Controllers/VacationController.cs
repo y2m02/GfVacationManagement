@@ -24,15 +24,15 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateVacationRequest request)
+        public async Task<IActionResult> Create(VacationRequest request)
         {
             return ValidateResponse(await service.Create(request).ConfigureAwait(false));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(UpdateVacationRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, VacationRequest request)
         {
-            return ValidateResponse(await service.Update(request).ConfigureAwait(false));
+            return ValidateResponse(await service.Update(id, request).ConfigureAwait(false));
         }
 
         [HttpDelete("{id}")]

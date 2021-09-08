@@ -12,8 +12,7 @@ namespace VacationManagerApi.Mappings
         public ProfileMapper()
         {
             CreateMap<Holiday, HolidayDto>();
-            CreateMap<CreateHolidayRequest, Holiday>();
-            CreateMap<UpdateHolidayRequest, Holiday>();
+            CreateMap<HolidayRequest, Holiday>();
 
             CreateMap<Vacation, VacationDto>()
                 .ForMember(
@@ -38,8 +37,7 @@ namespace VacationManagerApi.Mappings
                         field => DateTimeHelper.GetTotalOfDays(field.From, field.To)
                     )
                 );
-            CreateMap<CreateVacationRequest, Vacation>();
-            CreateMap<UpdateVacationRequest, Vacation>();
+            CreateMap<VacationRequest, Vacation>();
         }
     }
 }
