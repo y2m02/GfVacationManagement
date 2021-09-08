@@ -11,31 +11,31 @@ namespace VacationManagerApi.Controllers
 
         public VacationController(IVacationService service) => this.service = service;
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             return ValidateResponse(await service.GetAll().ConfigureAwait(false));
         }
 
-        [HttpGet("Get/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             return ValidateResponse(await service.GetById(id).ConfigureAwait(false));
         }
 
-        [HttpPost("Create")]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateVacationRequest request)
         {
             return ValidateResponse(await service.Create(request).ConfigureAwait(false));
         }
 
-        [HttpPut("Update")]
+        [HttpPut]
         public async Task<IActionResult> Update(UpdateVacationRequest request)
         {
             return ValidateResponse(await service.Update(request).ConfigureAwait(false));
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             return ValidateResponse(await service.Delete(id).ConfigureAwait(false));

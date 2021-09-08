@@ -6,7 +6,7 @@ namespace VacationManagerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseApiController : Controller
+    public class BaseApiController : ControllerBase
     {
         protected ObjectResult InternalServerError(object value)
         {
