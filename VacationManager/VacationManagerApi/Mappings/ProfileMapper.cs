@@ -17,7 +17,7 @@ namespace VacationManagerApi.Mappings
             CreateMap<Vacation, VacationDto>()
                 .ForMember(
                     destination => destination.HolidayName,
-                    member => member.MapFrom(field => field.Holiday.Id)
+                    member => member.MapFrom(field => field.Holiday.Name)
                 )
                 .ForMember(
                     destination => destination.IsLongWeekend,

@@ -16,14 +16,9 @@ namespace VacationManagerApi.Repositories
             return context.Vacations.Include(x => x.Holiday).ToListAsync();
         }
 
-        public async Task<Vacation> Update(Vacation entity)
+        public Task<int> Update(Vacation entity)
         {
-            await Update(
-                entity,
-                new[] { "HolidayId", "Year", "To", "From" }
-            ).ConfigureAwait(false);
-
-            return await GetById(entity.Id).ConfigureAwait(false);
+            return Update(entity, new[] { "HolidayId", "Year", "To", "From" });
         }
     }
 }

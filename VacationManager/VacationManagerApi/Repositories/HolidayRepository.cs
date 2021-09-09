@@ -9,11 +9,9 @@ namespace VacationManagerApi.Repositories
     {
         public HolidayRepository(VacationManagerContext context) : base(context) { }
 
-        public async Task<Holiday> Update(Holiday entity)
+        public Task<int> Update(Holiday entity)
         {
-            await Update(entity, new[] { "Name", "TotalDays" }).ConfigureAwait(false);
-
-            return await GetById(entity.Id).ConfigureAwait(false);
+            return Update(entity, new[] { "Name", "TotalDays" });
         }
     }
 }

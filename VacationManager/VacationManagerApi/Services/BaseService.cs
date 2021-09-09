@@ -17,8 +17,8 @@ namespace VacationManagerApi.Services
     {
         Task<BaseResponse> GetAll();
         Task<BaseResponse> GetById(int id);
-        Task<BaseResponse> Create(IRequest entity);
-        Task<BaseResponse> Update(int id, IRequest entity);
+        Task<BaseResponse> Create(IRequest request);
+        Task<BaseResponse> Update(int id, IRequest request);
         Task<BaseResponse> Delete(int id);
     }
 
@@ -56,9 +56,9 @@ namespace VacationManagerApi.Services
             );
         }
 
-        public Task<BaseResponse> Create(IRequest entity) => Upsert(entity);
+        public Task<BaseResponse> Create(IRequest request) => Upsert(request);
 
-        public Task<BaseResponse> Update(int id, IRequest entity) => Upsert(entity, id);
+        public Task<BaseResponse> Update(int id, IRequest request) => Upsert(request, id);
 
         public Task<BaseResponse> Delete(int id)
         {
@@ -67,10 +67,12 @@ namespace VacationManagerApi.Services
                 {
                     if (id < 1)
                     {
-                        return new Validation(new[]
-                        {
-                            ConsumerMessages.FieldRequired.Format(nameof(id)),
-                        });
+                        return new Validation(
+                            new[]
+                            {
+                                ConsumerMessages.FieldRequired.Format(nameof(id)),
+                            }
+                        );
                     }
 
                     await Repository.Delete(new TEntity { Id = id }).ConfigureAwait(false);
@@ -92,25 +94,34 @@ namespace VacationManagerApi.Services
             }
         }
 
-        private Task<BaseResponse> Upsert(IRequest entity, int? id = null)
+        private Task<BaseResponse> Upsert(IRequest request, int? id = null)
         {
             return HandleErrors(
                 async () =>
                 {
-                    var validations = entity.Validate().ToList();
+                    var validations = request.Validate().ToList();
 
                     if (validations.Any())
                     {
                         return new Validation(validations);
                     }
 
-                    var mappedEntity = Mapper.Map<TEntity>(entity);
+                    var entity = Mapper.Map<TEntity>(request);
 
-                    var task = id.HasValue
-                        ? Repository.Update(mappedEntity.Tap(x => x.Id = id.Value))
-                        : Repository.Create(mappedEntity);
+                    if (id.HasValue)
+                    {
+                        await Repository
+                            .Update(entity.Tap(x => x.Id = id.Value))
+                            .ConfigureAwait(false);
 
-                    return new Success(Mapper.Map<TDto>(await task.ConfigureAwait(false)));
+                        entity = await Repository.GetById(id.Value).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await Repository.Create(entity).ConfigureAwait(false);
+                    }
+
+                    return new Success(Mapper.Map<TDto>(entity));
                 }
             );
         }

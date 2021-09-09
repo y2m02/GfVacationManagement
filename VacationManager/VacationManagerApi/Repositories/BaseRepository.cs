@@ -9,8 +9,8 @@ namespace VacationManagerApi.Repositories
     {
         Task<List<TEntity>> GetAll();
         Task<TEntity> GetById(int id);
-        Task<TEntity> Create(TEntity entity);
-        Task<TEntity> Update(TEntity entity);
+        Task<int> Create(TEntity entity);
+        Task<int> Update(TEntity entity);
         Task Delete(TEntity entity);
     }
 
@@ -27,12 +27,12 @@ namespace VacationManagerApi.Repositories
             return context.Set<TEntity>().SingleAsync(x => x.Id == id);
         }
 
-        public async Task<TEntity> Create(TEntity entity)
+        public async Task<int> Create(TEntity entity)
         {
             await context.Set<TEntity>().AddAsync(entity).ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
 
-            return entity;
+            return entity.Id;
         }
 
         public Task Delete(TEntity entity)
@@ -42,14 +42,16 @@ namespace VacationManagerApi.Repositories
             return context.SaveChangesAsync();
         }
 
-        protected Task Update(TEntity entity, IEnumerable<string> propertyNames)
+        protected async Task<int> Update(TEntity entity, IEnumerable<string> propertyNames)
         {
             foreach (var propertyName in propertyNames)
             {
                 context.Entry(entity).Property(propertyName).IsModified = true;
             }
 
-            return context.SaveChangesAsync();
+            await context.SaveChangesAsync().ConfigureAwait(false);
+
+            return entity.Id;
         }
     }
 }
