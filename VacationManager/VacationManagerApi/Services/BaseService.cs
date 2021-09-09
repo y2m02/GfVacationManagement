@@ -108,18 +108,13 @@ namespace VacationManagerApi.Services
 
                     var entity = Mapper.Map<TEntity>(request);
 
-                    if (id.HasValue)
-                    {
-                        await Repository
-                            .Update(entity.Tap(x => x.Id = id.Value))
-                            .ConfigureAwait(false);
+                    var task = id.HasValue
+                        ? Repository.Update(entity.Tap(x => x.Id = id.Value))
+                        : Repository.Create(entity);
 
-                        entity = await Repository.GetById(id.Value).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await Repository.Create(entity).ConfigureAwait(false);
-                    }
+                    entity = await Repository
+                        .GetById(await task.ConfigureAwait(false))
+                        .ConfigureAwait(false);
 
                     return new Success(Mapper.Map<TDto>(entity));
                 }
