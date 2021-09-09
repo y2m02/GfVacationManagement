@@ -11,9 +11,17 @@ namespace VacationManagerApi.Repositories
     {
         public VacationRepository(VacationManagerContext context) : base(context) { }
 
-        public override Task<List<Vacation>> GetAll()
+        public Task<List<Vacation>> GetAll()
         {
             return context.Vacations.Include(x => x.Holiday).ToListAsync();
+        }
+
+        public Task<Vacation> GetById(int id)
+        {
+            return context
+                .Set<Vacation>()
+                .Include(x => x.Holiday)
+                .SingleAsync(x => x.Id == id);
         }
 
         public Task<int> Update(Vacation entity)

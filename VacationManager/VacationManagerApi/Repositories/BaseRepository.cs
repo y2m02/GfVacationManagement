@@ -19,14 +19,7 @@ namespace VacationManagerApi.Repositories
         protected readonly VacationManagerContext context;
 
         protected BaseRepository(VacationManagerContext context) => this.context = context;
-
-        public virtual Task<List<TEntity>> GetAll() => context.Set<TEntity>().ToListAsync();
-
-        public Task<TEntity> GetById(int id)
-        {
-            return context.Set<TEntity>().SingleAsync(x => x.Id == id);
-        }
-
+        
         public async Task<int> Create(TEntity entity)
         {
             await context.Set<TEntity>().AddAsync(entity).ConfigureAwait(false);

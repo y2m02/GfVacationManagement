@@ -8,14 +8,21 @@ namespace VacationManagerApi.Helpers
     {
         public static int GetTotalOfDays(DateTime from, DateTime to)
         {
-            return GetDatesBetweenTwoDates(from, to).Count();
+            var dates = GetDatesBetweenTwoDates(from, to).ToList();
+
+            return GetTotalOfWorkingDays(dates) + GetWeekendsTotal(dates) * 2;
+        }
+
+        public static int GetTotalOfWorkingDays(IEnumerable<DateTime> dates)
+        {
+            return dates.Count(
+                date => date.DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday)
+            );
         }
 
         public static int GetTotalOfWorkingDays(DateTime from, DateTime to)
         {
-            return GetDatesBetweenTwoDates(from, to).Count(
-                date => date.DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday)
-            );
+            return GetTotalOfWorkingDays(GetDatesBetweenTwoDates(from, to));
         }
 
         public static bool ContainsLongWeekends(DateTime from, DateTime to)
@@ -25,27 +32,34 @@ namespace VacationManagerApi.Helpers
             );
         }
 
-        public static int GetWeekendsTotal(DateTime from, DateTime to)
+        public static int GetWeekendsTotal(IEnumerable<DateTime> dates)
         {
             var counter = 0;
             DateTime? friday = null;
 
-            foreach (var date in GetDatesBetweenTwoDates(from, to))
+            foreach (var date in dates)
             {
                 switch (date.DayOfWeek)
                 {
                     case DayOfWeek.Friday:
                         counter++;
                         friday = date;
+
                         break;
 
                     case DayOfWeek.Monday when friday is null:
                         counter++;
+
                         break;
                 }
             }
 
             return counter;
+        }
+
+        public static int GetWeekendsTotal(DateTime from, DateTime to)
+        {
+            return GetWeekendsTotal(GetDatesBetweenTwoDates(from, to));
         }
 
         public static IEnumerable<DateTime> GetDatesBetweenTwoDates(DateTime from, DateTime to)
