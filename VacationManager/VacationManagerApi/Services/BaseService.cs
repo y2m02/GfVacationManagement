@@ -15,11 +15,11 @@ namespace VacationManagerApi.Services
 {
     public interface IBaseService
     {
-        Task<BaseResponse> GetAll();
-        Task<BaseResponse> GetById(int id);
-        Task<BaseResponse> Create(IRequest request);
-        Task<BaseResponse> Update(int id, IRequest request);
-        Task<BaseResponse> Delete(int id);
+        Task<IBaseResponse> GetAll();
+        Task<IBaseResponse> GetById(int id);
+        Task<IBaseResponse> Create(IRequest request);
+        Task<IBaseResponse> Update(int id, IRequest request);
+        Task<IBaseResponse> Delete(int id);
     }
 
     public abstract class BaseService<TEntity, TDto>
@@ -32,7 +32,7 @@ namespace VacationManagerApi.Services
 
         protected IBaseRepository<TEntity> Repository { get; set; }
 
-        public Task<BaseResponse> GetAll()
+        public Task<IBaseResponse> GetAll()
         {
             return HandleErrors(
                 async () =>
@@ -44,7 +44,7 @@ namespace VacationManagerApi.Services
             );
         }
 
-        public Task<BaseResponse> GetById(int id)
+        public Task<IBaseResponse> GetById(int id)
         {
             return HandleErrors(
                 async () =>
@@ -56,11 +56,11 @@ namespace VacationManagerApi.Services
             );
         }
 
-        public Task<BaseResponse> Create(IRequest request) => Upsert(request);
+        public Task<IBaseResponse> Create(IRequest request) => Upsert(request);
 
-        public Task<BaseResponse> Update(int id, IRequest request) => Upsert(request, id);
+        public Task<IBaseResponse> Update(int id, IRequest request) => Upsert(request, id);
 
-        public Task<BaseResponse> Delete(int id)
+        public Task<IBaseResponse> Delete(int id)
         {
             return HandleErrors(
                 async () =>
@@ -82,7 +82,7 @@ namespace VacationManagerApi.Services
             );
         }
 
-        protected async Task<BaseResponse> HandleErrors(Func<Task<BaseResponse>> executor)
+        protected async Task<IBaseResponse> HandleErrors(Func<Task<IBaseResponse>> executor)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace VacationManagerApi.Services
             }
         }
 
-        private Task<BaseResponse> Upsert(IRequest request, int? id = null)
+        private Task<IBaseResponse> Upsert(IRequest request, int? id = null)
         {
             return HandleErrors(
                 async () =>

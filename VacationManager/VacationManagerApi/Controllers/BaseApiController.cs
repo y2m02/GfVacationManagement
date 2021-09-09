@@ -25,8 +25,8 @@ namespace VacationManagerApi.Controllers
         }
 
         protected IActionResult ValidateResponse(
-            Func<BaseResponse, ObjectResult> success,
-            BaseResponse response
+            Func<IBaseResponse, ObjectResult> success,
+            IBaseResponse response
         )
         {
             if (response.HasValidations())

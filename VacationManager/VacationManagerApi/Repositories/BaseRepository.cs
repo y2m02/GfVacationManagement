@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using VacationManagerApi.Models.Entities;
 
 namespace VacationManagerApi.Repositories

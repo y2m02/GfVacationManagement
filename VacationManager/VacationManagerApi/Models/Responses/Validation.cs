@@ -2,7 +2,7 @@
 
 namespace VacationManagerApi.Models.Responses
 {
-    public class Validation : BaseResponse
+    public class Validation : IBaseResponse
     {
         public Validation(IEnumerable<string> errors)
         {

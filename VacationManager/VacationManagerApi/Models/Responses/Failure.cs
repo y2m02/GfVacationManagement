@@ -2,7 +2,7 @@
 
 namespace VacationManagerApi.Models.Responses
 {
-    public class Failure : BaseResponse
+    public class Failure : IBaseResponse
     {
         public Failure(IEnumerable<string> errors)
         {

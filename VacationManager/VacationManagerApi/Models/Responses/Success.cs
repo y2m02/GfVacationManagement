@@ -1,6 +1,6 @@
 ﻿namespace VacationManagerApi.Models.Responses
 {
-    public class Success : BaseResponse
+    public class Success : IBaseResponse
     {
         public Success() { }
 
