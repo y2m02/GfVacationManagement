@@ -1,28 +1,40 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using VacationManagerApi.Models.Responses;
 
 namespace VacationManagerApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
+        protected ObjectResult Created(object value)
+        {
+            return StatusCode((int)HttpStatusCode.Created, value);
+        }
+
+        protected ObjectResult NoContent(object value)
+        {
+            return StatusCode((int)HttpStatusCode.NoContent, value);
+        }
+
         protected ObjectResult InternalServerError(object value)
         {
             return StatusCode((int)HttpStatusCode.InternalServerError, value);
         }
 
-        protected IActionResult ValidateResponse(BaseResponse response)
+        protected IActionResult ValidateResponse(
+            Func<BaseResponse, ObjectResult> success,
+            BaseResponse response
+        )
         {
-            if (response.Succeeded())
+            if (response.HasValidations())
             {
-                return Ok(response);
+                return BadRequest(response);
             }
 
-            return response.HasValidations()
-                ? BadRequest(response)
-                : InternalServerError(response);
+            return response.Succeeded() ? success(response) : InternalServerError(response);
         }
     }
 }

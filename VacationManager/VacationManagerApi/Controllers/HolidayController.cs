@@ -14,31 +14,31 @@ namespace VacationManagerApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return ValidateResponse(await service.GetAll().ConfigureAwait(false));
+            return ValidateResponse(Ok, await service.GetAll().ConfigureAwait(false));
         }
 
         [HttpGet("{id:required}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return ValidateResponse(await service.GetById(id).ConfigureAwait(false));
+            return ValidateResponse(Ok, await service.GetById(id).ConfigureAwait(false));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(HolidayRequest request)
         {
-            return ValidateResponse(await service.Create(request).ConfigureAwait(false));
+            return ValidateResponse(Created, await service.Create(request).ConfigureAwait(false));
         }
 
         [HttpPut("{id:required}")]
         public async Task<IActionResult> Update(int id, HolidayRequest request)
         {
-            return ValidateResponse(await service.Update(id, request).ConfigureAwait(false));
+            return ValidateResponse(Ok, await service.Update(id, request).ConfigureAwait(false));
         }
 
         [HttpDelete("{id:required}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return ValidateResponse(await service.Delete(id).ConfigureAwait(false));
+            return ValidateResponse(NoContent, await service.Delete(id).ConfigureAwait(false));
         }
     }
 }

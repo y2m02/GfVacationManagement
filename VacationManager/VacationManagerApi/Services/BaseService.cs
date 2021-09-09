@@ -78,7 +78,7 @@ namespace VacationManagerApi.Services
 
                     await Repository.Delete(new TEntity { Id = id }).ConfigureAwait(false);
 
-                    return new Success(ConsumerMessages.SuccessResponse.Format(1, 1, ConsumerMessages.Deleted));
+                    return new Success();
                 }
             );
         }
