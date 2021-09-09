@@ -58,10 +58,7 @@ namespace VacationManagerApi.Services
 
         public Task<BaseResponse> Create(IRequest entity) => Upsert(entity);
 
-        public Task<BaseResponse> Update(int id, IRequest entity)
-        {
-            return Upsert(entity, id);
-        }
+        public Task<BaseResponse> Update(int id, IRequest entity) => Upsert(entity, id);
 
         public Task<BaseResponse> Delete(int id)
         {
