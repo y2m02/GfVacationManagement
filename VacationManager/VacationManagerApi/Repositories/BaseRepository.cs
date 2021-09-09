@@ -18,10 +18,7 @@ namespace VacationManagerApi.Repositories
     {
         protected readonly VacationManagerContext context;
 
-        protected BaseRepository(VacationManagerContext context)
-        {
-            this.context = context;
-        }
+        protected BaseRepository(VacationManagerContext context) => this.context = context;
 
         public virtual Task<List<TEntity>> GetAll() => context.Set<TEntity>().ToListAsync();
 
