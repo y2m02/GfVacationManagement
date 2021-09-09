@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HelpersLibrary.Extensions;
+using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Models.Helpers;
 using VacationManagerApi.Models.Requests;
@@ -14,16 +15,16 @@ namespace VacationManagerApi.Services
 {
     public interface IBaseService
     {
-        Task<Result> GetAll();
-        Task<Result> GetById(int id);
-        Task<Result> Create(IRequest entity);
-        Task<Result> Update(IUpdateableRequest entity);
-        Task<Result> Delete(int id);
+        Task<BaseResponse> GetAll();
+        Task<BaseResponse> GetById(int id);
+        Task<BaseResponse> Create(IRequest entity);
+        Task<BaseResponse> Update(int id, IRequest entity);
+        Task<BaseResponse> Delete(int id);
     }
 
-    public abstract class BaseService<TEntity, TResponse>
+    public abstract class BaseService<TEntity, TDto>
         where TEntity : BaseEntity, new()
-        where TResponse : BaseResponse
+        where TDto : BaseDto
     {
         protected readonly IMapper Mapper;
 
@@ -31,63 +32,58 @@ namespace VacationManagerApi.Services
 
         protected IBaseRepository<TEntity> Repository { get; set; }
 
-        public Task<Result> GetAll()
+        public Task<BaseResponse> GetAll()
         {
             return HandleErrors(
                 async () =>
                 {
                     var entities = await Repository.GetAll().ConfigureAwait(false);
 
-                    return new(Mapper.Map<List<TResponse>>(entities));
+                    return new Success(Mapper.Map<List<TDto>>(entities));
                 }
             );
         }
 
-        public Task<Result> GetById(int id)
+        public Task<BaseResponse> GetById(int id)
         {
             return HandleErrors(
                 async () =>
                 {
                     var entity = await Repository.GetById(id).ConfigureAwait(false);
 
-                    return new(Mapper.Map<TResponse>(entity));
+                    return new Success(Mapper.Map<TDto>(entity));
                 }
             );
         }
 
-        public Task<Result> Create(IRequest entity)
+        public Task<BaseResponse> Create(IRequest entity) => Upsert(entity);
+
+        public Task<BaseResponse> Update(int id, IRequest entity)
         {
-            return Upsert(entity, UpsertActionType.Create);
+            return Upsert(entity, id);
         }
 
-        public Task<Result> Update(IUpdateableRequest entity)
-        {
-            return Upsert(entity, UpsertActionType.Update);
-        }
-
-        public Task<Result> Delete(int id)
+        public Task<BaseResponse> Delete(int id)
         {
             return HandleErrors(
                 async () =>
                 {
                     if (id < 1)
                     {
-                        return new(
-                            validationErrors: new[]
-                            {
-                                ConsumerMessages.FieldRequired.Format(nameof(id)),
-                            }
-                        );
+                        return new Validation(new[]
+                        {
+                            ConsumerMessages.FieldRequired.Format(nameof(id)),
+                        });
                     }
 
                     await Repository.Delete(new TEntity { Id = id }).ConfigureAwait(false);
 
-                    return new(response: ConsumerMessages.SuccessResponse.Format(1, 1, ConsumerMessages.Deleted));
+                    return new Success(ConsumerMessages.SuccessResponse.Format(1, 1, ConsumerMessages.Deleted));
                 }
             );
         }
 
-        protected async Task<Result> HandleErrors(Func<Task<Result>> executor)
+        protected async Task<BaseResponse> HandleErrors(Func<Task<BaseResponse>> executor)
         {
             try
             {
@@ -95,11 +91,11 @@ namespace VacationManagerApi.Services
             }
             catch (Exception ex)
             {
-                return new(errorMessage: ex.Message);
+                return new Failure(new[] { ex.Message });
             }
         }
 
-        private Task<Result> Upsert(IRequest entity, UpsertActionType actionType)
+        private Task<BaseResponse> Upsert(IRequest entity, int? id = null)
         {
             return HandleErrors(
                 async () =>
@@ -108,28 +104,16 @@ namespace VacationManagerApi.Services
 
                     if (validations.Any())
                     {
-                        return new(validationErrors: validations);
+                        return new Validation(validations);
                     }
 
                     var mappedEntity = Mapper.Map<TEntity>(entity);
-                    TEntity entityFromDb;
 
-                    switch (actionType)
-                    {
-                        case UpsertActionType.Create:
-                            entityFromDb = await Repository.Create(mappedEntity).ConfigureAwait(false);
-                            break;
+                    var task = id.HasValue
+                        ? Repository.Update(mappedEntity.Tap(x => x.Id = id.Value))
+                        : Repository.Create(mappedEntity);
 
-                        default:
-                            await Repository.Update(mappedEntity).ConfigureAwait(false);
-
-                            entityFromDb = await Repository
-                                .GetById(((IUpdateableRequest)entity).Id)
-                                .ConfigureAwait(false);
-                            break;
-                    }
-
-                    return new(Mapper.Map<TResponse>(entityFromDb));
+                    return new Success(Mapper.Map<TDto>(await task.ConfigureAwait(false)));
                 }
             );
         }

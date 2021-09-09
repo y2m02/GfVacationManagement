@@ -5,7 +5,7 @@ using VacationManagerApi.Models.Helpers;
 
 namespace VacationManagerApi.Models.Requests
 {
-    public class CreateVacationRequest : IRequest
+    public class VacationRequest : IRequest
     {
         public int HolidayId { get; set; }
         public DateTime From { get; set; }

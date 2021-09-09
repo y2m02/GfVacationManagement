@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace VacationManagerApi.Models.Responses
+namespace VacationManagerApi.Models.Dtos
 {
-    public class VacationResponse : BaseResponse
+    public class VacationDto : BaseDto
     {
         public int HolidayId { get; set; }
         public string HolidayName { get; set; }

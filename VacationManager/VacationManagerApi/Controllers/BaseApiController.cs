@@ -6,23 +6,23 @@ namespace VacationManagerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BaseApiController : Controller
+    public class BaseApiController : ControllerBase
     {
         protected ObjectResult InternalServerError(object value)
         {
             return StatusCode((int)HttpStatusCode.InternalServerError, value);
         }
 
-        protected IActionResult ValidateResult(Result result)
+        protected IActionResult ValidateResponse(BaseResponse response)
         {
-            if (result.Succeeded())
+            if (response.Succeeded())
             {
-                return Ok(result);
+                return Ok(response);
             }
 
-            return result.HasValidations()
-                ? BadRequest(result)
-                : InternalServerError(result);
+            return response.HasValidations()
+                ? BadRequest(response)
+                : InternalServerError(response);
         }
     }
 }

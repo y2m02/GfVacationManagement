@@ -6,9 +6,4 @@ namespace VacationManagerApi.Models.Requests
     {
         IEnumerable<string> Validate();
     }
-
-    public interface IUpdateableRequest : IRequest
-    {
-        int Id { get; set; }
-    }
 }

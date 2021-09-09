@@ -2,6 +2,10 @@
 {
     public abstract class BaseResponse
     {
-        public int Id { get; set; }
+        public bool Succeeded() => this is Success;
+
+        public bool HasValidations() => this is Validation;
+
+        public bool Failed() => this is Failure;
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace VacationManagerApi.Models.Responses
+﻿namespace VacationManagerApi.Models.Dtos
 {
-    public class HolidayResponse : BaseResponse
+    public class HolidayDto : BaseDto
     {
         public string Name { get; set; }
         public int TotalDays { get; set; }

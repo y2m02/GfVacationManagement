@@ -24,6 +24,7 @@ namespace VacationManagerApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddRouting(r => r.LowercaseUrls = true);
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" }));
 
             var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new ProfileMapper()));

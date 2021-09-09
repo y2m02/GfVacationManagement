@@ -4,7 +4,7 @@ using VacationManagerApi.Models.Helpers;
 
 namespace VacationManagerApi.Models.Requests
 {
-    public class CreateHolidayRequest : IRequest
+    public class HolidayRequest : IRequest
     {
         public string Name { get; set; }
         public int TotalDays { get; set; }
