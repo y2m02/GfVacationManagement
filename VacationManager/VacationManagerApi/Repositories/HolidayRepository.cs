@@ -17,10 +17,5 @@ namespace VacationManagerApi.Repositories
         {
             return context.Set<Holiday>().SingleAsync(x => x.Id == id);
         }
-
-        public Task<int> Update(Holiday entity)
-        {
-            return Update(entity, new[] { "Name", "TotalDays" });
-        }
     }
 }

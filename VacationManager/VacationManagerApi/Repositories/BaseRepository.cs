@@ -18,7 +18,7 @@ namespace VacationManagerApi.Repositories
         protected readonly VacationManagerContext context;
 
         protected BaseRepository(VacationManagerContext context) => this.context = context;
-        
+
         public async Task<int> Create(TEntity entity)
         {
             await context.Set<TEntity>().AddAsync(entity).ConfigureAwait(false);
@@ -32,6 +32,14 @@ namespace VacationManagerApi.Repositories
             context.Set<TEntity>().Remove(entity);
 
             return context.SaveChangesAsync();
+        }
+
+        public async Task<int> Update(TEntity entity)
+        {
+            context.Set<TEntity>().Update(entity);
+            await context.SaveChangesAsync().ConfigureAwait(false);
+
+            return entity.Id;
         }
 
         protected async Task<int> Update(TEntity entity, IEnumerable<string> propertyNames)

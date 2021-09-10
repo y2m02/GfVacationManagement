@@ -23,10 +23,5 @@ namespace VacationManagerApi.Repositories
                 .Include(x => x.Holiday)
                 .SingleAsync(x => x.Id == id);
         }
-
-        public Task<int> Update(Vacation entity)
-        {
-            return Update(entity, new[] { "HolidayId", "Year", "To", "From" });
-        }
     }
 }
