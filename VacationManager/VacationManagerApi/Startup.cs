@@ -25,10 +25,8 @@ namespace VacationManagerApi
         {
             services.AddControllers();
             services.AddRouting(r => r.LowercaseUrls = true);
+            services.AddAutoMapper(typeof(Startup));
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" }));
-
-            var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new ProfileMapper()));
-            services.AddSingleton(mappingConfig.CreateMapper());
 
             services.AddDbContext<VacationManagerContext>(
                 option => option.UseSqlServer(
