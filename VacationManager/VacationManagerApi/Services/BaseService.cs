@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using HelpersLibrary.Extensions;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
-using VacationManagerApi.Models.Helpers;
 using VacationManagerApi.Models.Requests;
 using VacationManagerApi.Models.Responses;
 using VacationManagerApi.Repositories;
@@ -39,7 +37,7 @@ namespace VacationManagerApi.Services
                 {
                     var entities = await Repository.GetAll().ConfigureAwait(false);
 
-                    return new Success(Mapper.Map<List<TDto>>(entities));
+                    return Mapper.Map<List<TDto>>(entities);
                 }
             );
         }
@@ -51,7 +49,7 @@ namespace VacationManagerApi.Services
                 {
                     var entity = await Repository.GetById(id).ConfigureAwait(false);
 
-                    return new Success(Mapper.Map<TDto>(entity));
+                    return Mapper.Map<TDto>(entity);
                 }
             );
         }
@@ -62,35 +60,32 @@ namespace VacationManagerApi.Services
 
         public Task<IBaseResponse> Delete(int id)
         {
-            return HandleErrors(
-                async () =>
-                {
-                    if (id < 1)
-                    {
-                        return new Validation(
-                            new[]
-                            {
-                                ConsumerMessages.FieldRequired.Format(nameof(id)),
-                            }
-                        );
-                    }
-
-                    await Repository.Delete(new TEntity { Id = id }).ConfigureAwait(false);
-
-                    return new Success();
-                }
-            );
+            return HandleErrors(() => Repository.Delete(new TEntity { Id = id }));
         }
 
-        protected async Task<IBaseResponse> HandleErrors(Func<Task<IBaseResponse>> executor)
+        protected async Task<IBaseResponse> HandleErrors<TReturn>(Func<Task<TReturn>> executor)
         {
             try
             {
-                return await executor().ConfigureAwait(false);
+                return new Success(await executor().ConfigureAwait(false));
             }
             catch (Exception ex)
             {
-                return new Failure(new[] { ex.Message });
+                return new Failure(ex.Message);
+            }
+        }
+
+        protected async Task<IBaseResponse> HandleErrors(Func<Task> executor)
+        {
+            try
+            {
+                await executor().ConfigureAwait(false);
+
+                return new Success();
+            }
+            catch (Exception ex)
+            {
+                return new Failure(ex.Message);
             }
         }
 
@@ -99,13 +94,6 @@ namespace VacationManagerApi.Services
             return HandleErrors(
                 async () =>
                 {
-                    var validations = request.Validate().ToList();
-
-                    if (validations.Any())
-                    {
-                        return new Validation(validations);
-                    }
-
                     var entity = Mapper.Map<TEntity>(request);
 
                     var task = id.HasValue
@@ -116,7 +104,7 @@ namespace VacationManagerApi.Services
                         .GetById(await task.ConfigureAwait(false))
                         .ConfigureAwait(false);
 
-                    return new Success(Mapper.Map<TDto>(entity));
+                    return Mapper.Map<TDto>(entity);
                 }
             );
         }

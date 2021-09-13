@@ -29,11 +29,6 @@ namespace VacationManagerApi.Controllers
             IBaseResponse response
         )
         {
-            if (response.HasValidations())
-            {
-                return BadRequest(response);
-            }
-
             return response.Succeeded() ? success(response) : InternalServerError(response);
         }
     }

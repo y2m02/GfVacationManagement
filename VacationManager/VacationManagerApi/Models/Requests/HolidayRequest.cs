@@ -1,25 +1,15 @@
-﻿using System.Collections.Generic;
-using HelpersLibrary.Extensions;
-using VacationManagerApi.Models.Helpers;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace VacationManagerApi.Models.Requests
 {
     public class HolidayRequest : IRequest
     {
+        [Required]
+        [StringLength(50)]
         public string Name { get; set; }
+
+        [Required]
+        [Range(1, 10)]
         public int TotalDays { get; set; }
-
-        public virtual IEnumerable<string> Validate()
-        {
-            if (Name.IsEmpty())
-            {
-                yield return ConsumerMessages.FieldRequired.Format(nameof(Name));
-            }
-
-            if (TotalDays < 1)
-            {
-                yield return ConsumerMessages.FieldRequired.Format(nameof(TotalDays));
-            }
-        }
     }
 }

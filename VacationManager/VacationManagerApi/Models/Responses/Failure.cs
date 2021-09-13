@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace VacationManagerApi.Models.Responses
+﻿namespace VacationManagerApi.Models.Responses
 {
     public class Failure : IBaseResponse
     {
-        public Failure(IEnumerable<string> errors)
+        public Failure(string error)
         {
-            Errors = errors;
+            Error = error;
         }
 
-        public IEnumerable<string> Errors { get; }
+        public string Error { get; }
     }
 }
