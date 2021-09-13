@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Requests;
@@ -14,6 +15,7 @@ namespace VacationManagerApi.Controllers
         public HolidayController(IHolidayService service) => this.service = service;
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 50
@@ -23,6 +25,7 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpGet("{id:required}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await service.GetById(id).ConfigureAwait(false);
@@ -38,6 +41,7 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(HolidayRequest request)
         {
             var response = await service.Create(request).ConfigureAwait(false);

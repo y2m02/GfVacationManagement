@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VacationManagerApi.Models.Responses;
 
 namespace VacationManagerApi.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class BaseApiController : ControllerBase
     {
         protected ObjectResult InternalServerError(object value)

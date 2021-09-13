@@ -44,6 +44,7 @@ namespace VacationManagerApi.Mappings
             CreateMap<VacationRequest, Vacation>();
 
             CreateMap<RegisterUserRequest, ApplicationUser>();
+            CreateMap<SingInRequest, ApplicationUser>();
         }
     }
 }

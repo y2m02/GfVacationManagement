@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Repositories;
 using VacationManagerApi.Services;
@@ -22,11 +25,6 @@ namespace VacationManagerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddRouting(r => r.LowercaseUrls = true);
-            services.AddAutoMapper(typeof(Startup));
-            services.AddSwaggerGen(c => c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" }));
-
             services.AddDbContext<VacationManagerContext>(
                 option => option.UseSqlServer(
                     Configuration.GetConnectionString("VacationManagerConnection")
@@ -38,6 +36,46 @@ namespace VacationManagerApi
                 .AddEntityFrameworkStores<VacationManagerContext>()
                 .AddDefaultTokenProviders();
 
+            services
+                .AddAuthentication(
+                    options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    }
+                )
+                .AddJwtBearer(
+                    option =>
+                    {
+                        option.SaveToken = true;
+
+                        option.TokenValidationParameters = new()
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidAudience = Configuration["JWT:ValidAudience"],
+                            ValidIssuer = Configuration["JWT:ValidIssuer"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(Configuration["JWT:Secret"])
+                            ),
+                        };
+
+                        option.RequireHttpsMetadata = true;
+                    }
+                );
+
+            services.AddControllers();
+            services.AddRouting(r => r.LowercaseUrls = true);
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddSwaggerGen(
+                c =>
+                {
+                    c.SwaggerDoc("v1", new() { Title = "VacationManager", Version = "v1" });
+                }
+            );
+
             RegisterServices(services);
         }
 
@@ -48,10 +86,17 @@ namespace VacationManagerApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationManager v1"));
+
+                app.UseSwaggerUI(
+                    c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacationManager v1");
+                    }
+                );
             }
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

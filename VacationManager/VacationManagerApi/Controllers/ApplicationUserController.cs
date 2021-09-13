@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VacationManagerApi.Models.Requests;
 using VacationManagerApi.Services;
@@ -16,10 +17,18 @@ namespace VacationManagerApi.Controllers
             this.service = service;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateRole([FromBody] RegisterUserRequest user)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserRequest user)
         {
             return OkResponse(await service.Register(user).ConfigureAwait(false));
+        }
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] SingInRequest user)
+        {
+            return OkResponse(await service.SingIn(user).ConfigureAwait(false));
         }
     }
 }
