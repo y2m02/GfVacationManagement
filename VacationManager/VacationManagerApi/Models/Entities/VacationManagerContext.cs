@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace VacationManagerApi.Models.Entities
 {
-    public class VacationManagerContext : DbContext
+    public class VacationManagerContext : IdentityDbContext<ApplicationUser>
     {
         public VacationManagerContext(DbContextOptions options)
             : base(options) { }

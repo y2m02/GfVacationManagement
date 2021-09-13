@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using VacationManagerApi.Helpers;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
@@ -41,6 +42,8 @@ namespace VacationManagerApi.Mappings
                     )
                 );
             CreateMap<VacationRequest, Vacation>();
+
+            CreateMap<RegisterUserRequest, ApplicationUser>();
         }
     }
 }
