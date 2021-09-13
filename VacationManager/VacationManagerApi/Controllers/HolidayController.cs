@@ -14,9 +14,12 @@ namespace VacationManagerApi.Controllers
         public HolidayController(IHolidayService service) => this.service = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 50
+        )
         {
-            return OkResponse(await service.GetAll().ConfigureAwait(false));
+            return OkResponse(await service.GetAll(pageNumber, pageSize).ConfigureAwait(false));
         }
 
         [HttpGet("{id:required}")]

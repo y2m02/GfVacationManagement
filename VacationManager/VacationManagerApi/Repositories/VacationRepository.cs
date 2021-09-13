@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VacationManagerApi.Models.Entities;
@@ -12,15 +13,20 @@ namespace VacationManagerApi.Repositories
     {
         public VacationRepository(VacationManagerContext context) : base(context) { }
 
-        public Task<List<Vacation>> GetAll()
+        public Task<List<Vacation>> GetAll(int pageNumber, int pageSize)
         {
-            return context.Vacations.Include(x => x.Holiday).ToListAsync();
+            var limit = (pageNumber - 1) * pageSize;
+
+            return context.Vacations
+                .Skip(limit)
+                .Take(pageSize > 100 ? 100 : pageSize)
+                .Include(x => x.Holiday)
+                .ToListAsync();
         }
 
         public async Task<Vacation?> GetById(int id)
         {
-            return await context
-                .Set<Vacation>()
+            return await context.Vacations
                 .Include(x => x.Holiday)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 .ConfigureAwait(false);

@@ -13,7 +13,7 @@ namespace VacationManagerApi.Services
 {
     public interface IBaseService
     {
-        Task<IBaseResponse> GetAll();
+        Task<IBaseResponse> GetAll(int pageNumber, int pageSize);
         Task<IBaseResponse> GetById(int id);
         Task<IBaseResponse> Create(IRequest request);
         Task<IBaseResponse> Update(int id, IRequest request);
@@ -30,12 +30,14 @@ namespace VacationManagerApi.Services
 
         protected IBaseRepository<TEntity> Repository { get; set; }
 
-        public Task<IBaseResponse> GetAll()
+        public Task<IBaseResponse> GetAll(int pageNumber, int pageSize)
         {
             return HandleErrors(
                 async () =>
                 {
-                    var entities = await Repository.GetAll().ConfigureAwait(false);
+                    var entities = await Repository
+                        .GetAll(pageNumber, pageSize)
+                        .ConfigureAwait(false);
 
                     return Mapper.Map<List<TDto>>(entities);
                 }

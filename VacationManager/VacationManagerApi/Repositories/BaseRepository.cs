@@ -7,7 +7,7 @@ namespace VacationManagerApi.Repositories
 {
     public interface IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<List<TEntity>> GetAll();
+        Task<List<TEntity>> GetAll(int pageNumber, int pageSize);
         Task<TEntity?> GetById(int id);
         Task<int> Create(TEntity entity);
         Task<int> Update(TEntity entity);
