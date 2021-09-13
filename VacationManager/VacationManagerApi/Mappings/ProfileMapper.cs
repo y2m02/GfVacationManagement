@@ -3,7 +3,6 @@ using VacationManagerApi.Helpers;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Entities;
 using VacationManagerApi.Models.Requests;
-using VacationManagerApi.Models.Responses;
 
 namespace VacationManagerApi.Mappings
 {
@@ -24,6 +23,10 @@ namespace VacationManagerApi.Mappings
                     member => member.MapFrom(
                         field => DateTimeHelper.ContainsLongWeekends(field.From, field.To)
                     )
+                )
+                .ForMember(
+                    destination => destination.Year,
+                    member => member.MapFrom(field => field.From.Year)
                 )
                 .ForMember(
                     destination => destination.TotalWorkingDays,
