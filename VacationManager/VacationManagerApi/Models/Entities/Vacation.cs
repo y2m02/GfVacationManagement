@@ -13,10 +13,6 @@ namespace VacationManagerApi.Models.Entities
         public DateTime To { get; set; }
 
         [Required]
-        [Range(2020, 2030)]
-        public int Year { get; set; }
-
-        [Required]
         public int HolidayId { get; set; }
 
         [ForeignKey(nameof(HolidayId))]

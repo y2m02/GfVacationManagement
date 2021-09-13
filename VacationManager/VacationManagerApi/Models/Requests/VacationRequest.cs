@@ -12,7 +12,5 @@ namespace VacationManagerApi.Models.Requests
 
         [ToMustBeGreaterOrEqualToFrom]
         public DateTime To { get; set; }
-
-        public int Year { get; set; }
     }
 }
