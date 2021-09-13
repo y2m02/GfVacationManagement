@@ -9,27 +9,32 @@ namespace VacationManagerApi.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : ControllerBase
     {
-        protected ObjectResult Created(object value)
-        {
-            return StatusCode((int)HttpStatusCode.Created, value);
-        }
-
-        protected ObjectResult NoContent(object value)
-        {
-            return StatusCode((int)HttpStatusCode.NoContent, value);
-        }
-
         protected ObjectResult InternalServerError(object value)
         {
             return StatusCode((int)HttpStatusCode.InternalServerError, value);
         }
 
-        protected IActionResult ValidateResponse(
+        protected IActionResult OkResponse(IBaseResponse response)
+        {
+            return ValidateResponse(Ok, response);
+        }
+
+        protected IActionResult NoContentResponse(IBaseResponse response)
+        {
+            return ValidateResponse(NoContent, response);
+        }
+
+        private IActionResult ValidateResponse(
             Func<IBaseResponse, ObjectResult> success,
             IBaseResponse response
         )
         {
             return response.Succeeded() ? success(response) : InternalServerError(response);
+        }
+
+        private ObjectResult NoContent(object value)
+        {
+            return StatusCode((int)HttpStatusCode.NoContent, value);
         }
     }
 }

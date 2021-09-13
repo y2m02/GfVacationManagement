@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Requests;
 using VacationManagerApi.Models.Responses;
 using VacationManagerApi.Services;
@@ -15,7 +16,7 @@ namespace VacationManagerApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return ValidateResponse(Ok, await service.GetAll().ConfigureAwait(false));
+            return OkResponse(await service.GetAll().ConfigureAwait(false));
         }
 
         [HttpGet("{id:required}")]
@@ -36,19 +37,32 @@ namespace VacationManagerApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(VacationRequest request)
         {
-            return ValidateResponse(Created, await service.Create(request).ConfigureAwait(false));
+            var response = await service.Create(request).ConfigureAwait(false);
+
+            if (response is not Success success)
+            {
+                return InternalServerError(response);
+            }
+
+            var vacation = (VacationDto)success.Response;
+
+            return CreatedAtAction(
+                actionName: nameof(GetById),
+                routeValues: new { controller = "Vacation", id = vacation.Id },
+                value: vacation
+            );
         }
 
         [HttpPut("{id:required}")]
         public async Task<IActionResult> Update(int id, VacationRequest request)
         {
-            return ValidateResponse(Ok, await service.Update(id, request).ConfigureAwait(false));
+            return OkResponse(await service.Update(id, request).ConfigureAwait(false));
         }
 
         [HttpDelete("{id:required}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return ValidateResponse(NoContent, await service.Delete(id).ConfigureAwait(false));
+            return NoContentResponse(await service.Delete(id).ConfigureAwait(false));
         }
     }
 }
