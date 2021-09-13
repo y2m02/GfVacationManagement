@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#nullable enable
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VacationManagerApi.Models.Entities;
 
 namespace VacationManagerApi.Repositories
@@ -13,9 +14,12 @@ namespace VacationManagerApi.Repositories
 
         public virtual Task<List<Holiday>> GetAll() => context.Set<Holiday>().ToListAsync();
 
-        public Task<Holiday> GetById(int id)
+        public async Task<Holiday?> GetById(int id)
         {
-            return context.Set<Holiday>().SingleAsync(x => x.Id == id);
+            return await context
+                .Set<Holiday>()
+                .SingleOrDefaultAsync(x => x.Id == id)
+                .ConfigureAwait(false);
         }
     }
 }

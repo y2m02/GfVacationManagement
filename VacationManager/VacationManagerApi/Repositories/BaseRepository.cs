@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VacationManagerApi.Models.Entities;
 
@@ -7,7 +8,7 @@ namespace VacationManagerApi.Repositories
     public interface IBaseRepository<TEntity> where TEntity : BaseEntity
     {
         Task<List<TEntity>> GetAll();
-        Task<TEntity> GetById(int id);
+        Task<TEntity?> GetById(int id);
         Task<int> Create(TEntity entity);
         Task<int> Update(TEntity entity);
         Task Delete(TEntity entity);

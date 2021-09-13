@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VacationManagerApi.Models.Requests;
+using VacationManagerApi.Models.Responses;
 using VacationManagerApi.Services;
 
 namespace VacationManagerApi.Controllers
@@ -20,7 +21,16 @@ namespace VacationManagerApi.Controllers
         [HttpGet("{id:required}")]
         public async Task<IActionResult> GetById(int id)
         {
-            return ValidateResponse(Ok, await service.GetById(id).ConfigureAwait(false));
+            var response = await service.GetById(id).ConfigureAwait(false);
+
+            if (response.Failed())
+            {
+                return InternalServerError(response);
+            }
+
+            return response is Success { Response: null }
+                ? NotFound(new { id })
+                : Ok(response);
         }
 
         [HttpPost]
