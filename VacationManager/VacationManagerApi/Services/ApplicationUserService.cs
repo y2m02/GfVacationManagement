@@ -18,23 +18,23 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace VacationManagerApi.Services
 {
-    public interface IUserService
+    public interface IApplicationUserService
     {
         Task<IBaseResponse> Register(RegisterUserRequest request);
         Task<IBaseResponse> SingIn(SingInRequest request);
     }
 
-    public class UserService : IUserService
+    public class ApplicationUserService : IApplicationUserService
     {
         private readonly IConfiguration configuration;
         private readonly IMapper mapper;
-        private readonly IUserRepository repository;
+        private readonly IApplicationUserRepository repository;
         private readonly SignInManager<ApplicationUser> signInManager;
 
-        public UserService(
+        public ApplicationUserService(
             IMapper mapper,
             IConfiguration configuration,
-            IUserRepository repository,
+            IApplicationUserRepository repository,
             SignInManager<ApplicationUser> signInManager
         )
         {
@@ -110,7 +110,6 @@ namespace VacationManagerApi.Services
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-            // TODO: Improve how to get user's roles.
             var roles = await repository
                 .GetRoles(userName)
                 .ConfigureAwait(false);

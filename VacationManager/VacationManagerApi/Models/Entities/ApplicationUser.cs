@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 namespace VacationManagerApi.Models.Entities
@@ -12,7 +13,7 @@ namespace VacationManagerApi.Models.Entities
         [Required]
         [StringLength(30)]
         public string LastName { get; set; }
-        
 
+        public ICollection<ApplicationUserRole> UserRoles { get; set; }
     }
 }

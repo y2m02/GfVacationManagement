@@ -32,7 +32,7 @@ namespace VacationManagerApi
             );
 
             services
-                .AddIdentity<ApplicationUser, IdentityRole>()
+                .AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<VacationManagerContext>()
                 .AddDefaultTokenProviders();
 

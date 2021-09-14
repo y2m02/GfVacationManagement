@@ -1,6 +1,6 @@
 ﻿namespace VacationManagerApi.Helpers
 {
-    public static class UserRoles
+    public static class ApplicationRoles
     {
         public const string Admin = "Admin";
         public const string CanRead = "CanRead";

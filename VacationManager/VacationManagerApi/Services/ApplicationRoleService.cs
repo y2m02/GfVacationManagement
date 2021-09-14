@@ -6,17 +6,17 @@ using VacationManagerApi.Repositories;
 
 namespace VacationManagerApi.Services
 {
-    public interface IRoleService
+    public interface IApplicationRoleService
     {
         Task<IBaseResponse> GetRoles();
         Task<IBaseResponse> CreateRole(string roleName);
     }
 
-    public class RoleService : IRoleService
+    public class ApplicationRoleService : IApplicationRoleService
     {
-        private readonly IRoleRepository repository;
+        private readonly IApplicationRoleRepository repository;
 
-        public RoleService(IRoleRepository repository)
+        public ApplicationRoleService(IApplicationRoleRepository repository)
         {
             this.repository = repository;
         }

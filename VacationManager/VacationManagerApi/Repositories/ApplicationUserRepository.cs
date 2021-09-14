@@ -1,39 +1,36 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using HelpersLibrary.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VacationManagerApi.Models.Entities;
 
 namespace VacationManagerApi.Repositories
 {
-    public interface IUserRepository
+    public interface IApplicationUserRepository
     {
         Task<IdentityResult> Add(ApplicationUser user, string password);
         Task<List<string>> GetRoles(string userName);
     }
 
-    public class UserRepository : IUserRepository
+    public class ApplicationUserRepository : IApplicationUserRepository
     {
         private readonly UserManager<ApplicationUser> userManager;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        public ApplicationUserRepository(UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
         }
 
-        // TODO: This is horrible and MUST be improved!
         public async Task<List<string>> GetRoles(string userName)
         {
-            var userId = (await userManager.Users
+            var user = await userManager.Users
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
                 .SingleAsync(u => u.UserName == userName)
-                .ConfigureAwait(false)).Id;
-
-            var roles = await userManager
-                .GetRolesAsync(new() { Id = userId })
                 .ConfigureAwait(false);
 
-            return roles.ToList();
+            return user.UserRoles.EagerSelect(x => x.Role.Name);
         }
 
         public Task<IdentityResult> Add(ApplicationUser user, string password)
