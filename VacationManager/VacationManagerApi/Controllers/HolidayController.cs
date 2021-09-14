@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VacationManagerApi.Helpers;
 using VacationManagerApi.Models.Dtos;
 using VacationManagerApi.Models.Requests;
 using VacationManagerApi.Models.Responses;
@@ -15,7 +16,7 @@ namespace VacationManagerApi.Controllers
         public HolidayController(IHolidayService service) => this.service = service;
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = UserRoles.AdminOrCanRead)]
         public async Task<IActionResult> GetAll(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 50
@@ -25,7 +26,7 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpGet("{id:required}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.AdminOrCanRead)]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await service.GetById(id).ConfigureAwait(false);
@@ -41,7 +42,7 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.AdminOrCanAdd)]
         public async Task<IActionResult> Create(HolidayRequest request)
         {
             var response = await service.Create(request).ConfigureAwait(false);
@@ -61,12 +62,14 @@ namespace VacationManagerApi.Controllers
         }
 
         [HttpPut("{id:required}")]
+        [Authorize(Roles = UserRoles.AdminOrCanUpdate)]
         public async Task<IActionResult> Update(int id, HolidayRequest request)
         {
             return OkResponse(await service.Update(id, request).ConfigureAwait(false));
         }
 
         [HttpDelete("{id:required}")]
+        [Authorize(Roles = UserRoles.AdminOrCanDelete)]
         public async Task<IActionResult> Delete(int id)
         {
             return NoContentResponse(await service.Delete(id).ConfigureAwait(false));

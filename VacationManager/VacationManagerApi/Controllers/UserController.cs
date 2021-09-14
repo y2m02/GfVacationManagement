@@ -8,27 +8,30 @@ namespace VacationManagerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApplicationUserController : BaseApiController
+    public class UserController : BaseApiController
     {
-        private readonly IApplicationUserService service;
+        private readonly IUserService service;
 
-        public ApplicationUserController(IApplicationUserService service)
+        public UserController(IUserService service)
         {
             this.service = service;
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterUserRequest user)
         {
-            return OkResponse(await service.Register(user).ConfigureAwait(false));
+            var response = await service.Register(user).ConfigureAwait(false);
+
+            return response.HasValidations() ? BadRequest(response) : OkResponse(response);
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] SingInRequest user)
         {
-            return OkResponse(await service.SingIn(user).ConfigureAwait(false));
+            var response = await service.SingIn(user).ConfigureAwait(false);
+
+            return response.Unauthorized() ? Unauthorized(response) : OkResponse(response);
         }
     }
 }

@@ -12,5 +12,7 @@ namespace VacationManagerApi.Models.Entities
         [Required]
         [StringLength(30)]
         public string LastName { get; set; }
+        
+
     }
 }

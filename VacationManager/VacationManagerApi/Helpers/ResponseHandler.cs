@@ -14,6 +14,10 @@ namespace VacationManagerApi.Helpers
 
         public static Validation Validations(IEnumerable<string> errors) => new(errors);
 
+        public static Unauthorized Unauthorized(string error) => new(new[] { error });
+
+        public static Unauthorized Unauthorized(IEnumerable<string> errors) => new(errors);
+
         public static Failure Failure(IEnumerable<string> errors) => new(errors.First());
 
         public static async Task<IBaseResponse> HandleErrors<TReturn>(Func<Task<TReturn>> executor)
