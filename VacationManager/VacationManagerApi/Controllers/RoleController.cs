@@ -8,9 +8,9 @@ namespace VacationManagerApi.Controllers
     [ApiController]
     public class RoleController : BaseApiController
     {
-        private readonly IApplicationUserRoleService service;
+        private readonly IRoleService service;
 
-        public RoleController(IApplicationUserRoleService service)
+        public RoleController(IRoleService service)
         {
             this.service = service;
         }
@@ -24,7 +24,9 @@ namespace VacationManagerApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromQuery] string name)
         {
-            return OkResponse(await service.CreateRole(name).ConfigureAwait(false));
+            var response = await service.CreateRole(name).ConfigureAwait(false);
+
+            return response.HasValidations() ? BadRequest(response) : OkResponse(response);
         }
     }
 }
